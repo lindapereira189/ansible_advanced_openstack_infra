@@ -1,0 +1,28 @@
+- name: Create instances
+  os_server:
+    cloud: openstack
+    name: "{{ item.server_name }}"
+    image: rhel-7.6
+    key_name: ansible_ssh_key
+    flavor: m2.medium
+    security_groups: "{{ item.security_group }}"
+    delete_fip: yes
+    wait: no
+    nics:
+      - net-name: int_network
+    meta: "{{ item.meta }}"
+    userdata: |
+      curl -o /tmp/openstack.pub http://www.opentlc.com/download/ansible_bootcamp/openstack_keys/openstack.pub
+      cat /tmp/openstack.pub >> /home/cloud-user/.ssh/authorized_keys
+  with_items: "{{ servers_floatingip_details }}"
+
+- name: add floting IP's to the servers created above
+  os_floating_ip:
+    cloud: openstack
+    server: "{{ item.server_name }}"
+    state: present
+    reuse: yes
+    network: ext_network
+    wait: true
+    timeout: 200
+  with_items: "{{ servers_floatingip_details }}"

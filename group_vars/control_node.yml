@@ -1,6 +1,13 @@
 openstack_cloud: openstack
 provisioning_ssh_key: ansible_ssh_key
 
+servers_floatingip_details:
+  - { server_name: frontend1, security_group: frontend, meta: 'group=load_balancers, deployment_name=dev' }
+  - { server_name: app1, security_group: apps, meta: 'group=app_servers, deployment_name=QA' }
+  - { server_name: app2, security_group: apps, meta: 'group=app_servers, deployment_name=dev' }
+  - { server_name: appdb1, security_group: db, meta: 'group=database_servers, deployment_name=dev' }
+
+
 openstack_images:
 
   - name: rhel-7.6
